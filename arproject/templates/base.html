@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.rtl.min.css"
+    integrity="sha384-+4j30LffJ4tgIMrq9CwHvn0NjEvmuDCOfk6Rpg2xg7zgOxWWtLtozDEEVvBPgHqE" crossorigin="anonymous">
+
+  <script>
+    let firebaseConfig = os.getenv('SECRET_CONFIG')
+
+    firebase.initializeApp(firebaseConfig);
+
+    let uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function () {
+          console.log("ログイン成功")
+          return true;
+        },
+      },
+      signInOptions: [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
+    };
+
+    let ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
+
+  <title>{% block title %}{% endblock title %}| 絵画合成アプリケーション</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-primary sticky-top">
+    <div class="navbar-nav d-flex flex-row">
+      <a class="nav-link mx-3" href="{% url 'synthesized-main' %}">合成画像リスト</a>
+      <a class="nav-link mx-3" href="{% url 'image-main' %}">絵画リスト</a>
+    </div>
+  </nav>
+  <div class="'p-4">
+    <h1>{% block h1 %}{% endblock %}</h1>
+    {% block content %}{% endblock content %}
+  </div>
+</body>
+
+</html>
