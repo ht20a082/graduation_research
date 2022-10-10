@@ -2,6 +2,7 @@ import cv2
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.views import View
+from pyzbar.pyzbar import decode, ZBarSymbol
 
 
 class Ar_camViews(View):
@@ -12,6 +13,7 @@ def video_feed_view():
     return lambda _: StreamingHttpResponse(generate_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 def generate_frame():
+    font = cv2.FONT_HERSHEY_SIMPLEX
     capture = cv2.VideoCapture(0) 
 
     while True:
@@ -22,6 +24,18 @@ def generate_frame():
         if not ret:
             print("Failed to read frame.")
             break
+
+        if ret:
+            value = decode(frame, symbols = [ZBarSymbol.QRCODE])
+            if value:
+                for qrcode in value:
+                    x, y, w, h = qrcode.rect
+
+                    dec_inf = qrcode.data.decode('utf-8')
+                    print('dec:', dec_inf)
+                    frame = cv2.putText(frame, dec_inf, (x, y-6), font, .3, (255,0,0), 1, cv2.LINE_AA)
+
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255,0), 1)
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         byte_frame = jpeg.tobytes()
