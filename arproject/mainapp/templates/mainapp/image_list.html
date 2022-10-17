@@ -1,1 +1,13 @@
-<h1>image_list.html</h1>
+{% extends 'base.html' %}
+
+{% block title %}絵画一覧{% endblock %}
+
+{% block content %}
+
+{% for item in object_list %}
+{{ item.title }}
+{{ item.height }}
+{{ item.width }}
+{% endfor %}
+
+{% endblock content %}

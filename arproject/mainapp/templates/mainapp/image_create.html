@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}絵画登録{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
+      <form method="POST" class="p-4 m-4 bg-light border border-success rounded form-group">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success mt-4">投稿する</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
