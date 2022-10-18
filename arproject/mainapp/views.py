@@ -11,7 +11,7 @@ class Top_view(TemplateView):
 class ListSynthesizedView(TemplateView):
     template_name = 'mainapp/synthesized_list.html'
 
-class ListImageView(TemplateView):
+class ListImageView(ListView):
     template_name = 'mainapp/image_list.html'
     model = Image
 

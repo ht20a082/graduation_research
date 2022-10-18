@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}絵画一覧{% endblock %}
+{% block title %}絵画リスト{% endblock %}
 
 {% block content %}
-
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
+      <h1>絵画リスト</h1>
 {% for item in object_list %}
-{{ item.title }}
-{{ item.height }}
-{{ item.width }}
+      <div class="card">
+        <h5 class="card-headder">{{ item.title }}</h5>
+        <div class="card-header">
+          <p class="card-text">{{ item.height }}</p>
+          <h6 class="card-title">{{ item.width }}</h6>
+          <img src="{{ item.thumbnail.url }}" class="img-thumbnail" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endfor %}
+
 
 {% endblock content %}
