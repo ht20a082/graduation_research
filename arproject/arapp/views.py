@@ -3,10 +3,12 @@ from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.views import View
 from pyzbar.pyzbar import decode, ZBarSymbol
+from mainapp.models import *
 
 
 class Ar_camViews(View):
-    def get(self, request):
+    model = Image
+    def get(self, request, pk):
         return render(request, 'arapp/ar_cam.html', {})
 
 def video_feed_view():

@@ -5,6 +5,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('ar_cam/', views.Ar_camViews.as_view(), name="ar_cam"),
+    path('<int:pk>/ar_cam/', views.Ar_camViews.as_view(), name="ar_cam"),
     path('video_feed/', views.video_feed_view(), name="video_feed"),
 ]
