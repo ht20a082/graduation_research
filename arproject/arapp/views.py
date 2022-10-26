@@ -14,9 +14,48 @@ class Ar_camViews(View):
 def video_feed_view():
     return lambda _: StreamingHttpResponse(generate_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
 
+def overlay(img, frame, shift, h, size):
+    k = size / h
+    mag = (540 / 100) / k
+
+    shift_x, shift_y = shift
+ 
+    img_h, img_w = img.shape[:2]
+    img_x_min, img_x_max = 0, img_w
+    img_y_min, img_y_max = 0, img_h
+ 
+    frame_h, frame_w = frame.shape[:2]
+    frame_x_min, frame_x_max = shift_y, shift_y+img_h
+    frame_y_min, frame_y_max = shift_x, shift_x+img_w
+ 
+    if frame_x_min < 0:
+        img_x_min = img_x_min - frame_x_min
+        frame_x_min = 0
+         
+    if frame_x_max > frame_w:
+        img_x_max = img_x_max - (frame_x_max - frame_w)
+        frame_x_max = frame_w
+ 
+    if frame_y_min < 0:
+        img_y_min = img_y_min - frame_y_min
+        frame_y_min = 0
+         
+    if frame_y_max > frame_h:
+        img_y_max = img_y_max - (frame_y_max - frame_h)
+        frame_y_max = frame_h        
+ 
+    #frame[frame_y_min:frame_y_max, frame_x_min:frame_x_max] = img[img_y_min:img_y_max, img_x_min:img_x_max]
+    M = cv2.getRotationMatrix2D((int(img_w/2), int(img_h/2)), 0, mag)
+    frame = cv2.warpAffine(img, M, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
+ 
+    return frame
+
 def generate_frame():
+    img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
     font = cv2.FONT_HERSHEY_SIMPLEX
-    capture = cv2.VideoCapture(0) 
+    capture = cv2.VideoCapture(1) 
 
     while True:
         if not capture.isOpened():
@@ -38,6 +77,14 @@ def generate_frame():
                     frame = cv2.putText(frame, dec_inf, (x, y-6), font, .3, (255,0,0), 1, cv2.LINE_AA)
 
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255,0), 1)
+
+                    #img2 = cv2.resize(img , (int(width*0.05), int(height*0.05)))
+
+                    #frame[y:y+img2.shape[0], x:x+img2.shape[1]] = img2
+
+                    size = img.shape[0]
+
+                    overlay(img, frame, (x, y), h, size)
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         byte_frame = jpeg.tobytes()
