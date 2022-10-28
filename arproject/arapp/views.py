@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views import View
 from pyzbar.pyzbar import decode, ZBarSymbol
 from mainapp.models import *
+from django.conf import settings
 
 
 class Ar_camViews(View):
@@ -12,7 +13,11 @@ class Ar_camViews(View):
         return render(request, 'arapp/ar_cam.html', {})
 
 def video_feed_view():
-    return lambda _: StreamingHttpResponse(generate_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
+    max_id = Image.objects.latest('id').id
+    obj = Image.objects.get(id = max_id)
+    input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
+    #output_path = settings.BASE_DIR + "/media/output/output.jpg"
+    return lambda _: StreamingHttpResponse(generate_frame(input_path), content_type='multipart/x-mixed-replace; boundary=frame')
 
 def overlay(img, frame, shift, h, size):
     k = size / h
@@ -50,8 +55,12 @@ def overlay(img, frame, shift, h, size):
  
     return frame
 
-def generate_frame():
-    img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
+def generate_frame(input_path):
+    #img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
+
+    print(input_path)
+
+    img = cv2.imread(input_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
