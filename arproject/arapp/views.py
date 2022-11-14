@@ -62,11 +62,12 @@ def overlay(img, frame, shift, h, size, r_size):
     #frame[frame_y_min:frame_y_max, frame_x_min:frame_x_max] = img[img_y_min:img_y_max, img_x_min:img_x_max]
     dx = shift_x
     dy = shift_y
-    m = np.float32([[1, 0, dx],[0, 1, dy]])
+    m = np.float32([[mag, 0, dx],[0, mag, dy]])
     frame = cv2.warpAffine(img, m, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
 
-    M = cv2.getRotationMatrix2D((int(img_w/2), int(img_h/2)), 0, mag)
-    frame = cv2.warpAffine(img, M, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
+    M = cv2.getRotationMatrix2D((int(dx), int(dy)), 0, mag)
+    print(M)
+    #frame = cv2.warpAffine(img, M, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
  
     return frame
 
