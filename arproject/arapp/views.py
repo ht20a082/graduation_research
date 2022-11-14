@@ -5,23 +5,33 @@ from django.views import View
 from pyzbar.pyzbar import decode, ZBarSymbol
 from mainapp.models import *
 from django.conf import settings
+import numpy as np
 
+prm = 2
 
 class Ar_camViews(View):
     model = Image
+    #prm = Image.objects.latest('id').id
     def get(self, request, pk):
+        global prm
+        prm = pk
         return render(request, 'arapp/ar_cam.html', {})
+    print(prm)
+
 
 def video_feed_view():
-    max_id = Image.objects.latest('id').id
-    obj = Image.objects.get(id = max_id)
+    #max_id = Image.objects.latest('id').id
+    #prm_obj = Ar_camViews()
+    #print(prm_obj.prm)
+    obj = Image.objects.get(id = prm)
     input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
+    r_size = obj.height
     #output_path = settings.BASE_DIR + "/media/output/output.jpg"
-    return lambda _: StreamingHttpResponse(generate_frame(input_path), content_type='multipart/x-mixed-replace; boundary=frame')
+    return lambda _: StreamingHttpResponse(generate_frame(input_path, r_size), content_type='multipart/x-mixed-replace; boundary=frame')
 
-def overlay(img, frame, shift, h, size):
+def overlay(img, frame, shift, h, size, r_size):
     k = size / h
-    mag = (540 / 100) / k
+    mag = (r_size / 100) / k
 
     shift_x, shift_y = shift
  
@@ -50,16 +60,18 @@ def overlay(img, frame, shift, h, size):
         frame_y_max = frame_h        
  
     #frame[frame_y_min:frame_y_max, frame_x_min:frame_x_max] = img[img_y_min:img_y_max, img_x_min:img_x_max]
+    dx = shift_x
+    dy = shift_y
+    m = np.float32([[1, 0, dx],[0, 1, dy]])
+    frame = cv2.warpAffine(img, m, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
+
     M = cv2.getRotationMatrix2D((int(img_w/2), int(img_h/2)), 0, mag)
     frame = cv2.warpAffine(img, M, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
  
     return frame
 
-def generate_frame(input_path):
+def generate_frame(input_path, r_size):
     #img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
-
-    print(input_path)
-
     img = cv2.imread(input_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -93,7 +105,7 @@ def generate_frame(input_path):
 
                     size = img.shape[0]
 
-                    overlay(img, frame, (x, y), h, size)
+                    overlay(img, frame, (x, y), h, size, r_size)
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         byte_frame = jpeg.tobytes()
