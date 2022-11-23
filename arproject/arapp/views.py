@@ -31,7 +31,7 @@ def video_feed_view():
 
 def overlay(img, frame, shift, h, size, r_size):
     k = size / h
-    mag = (r_size / 100) / k
+    mag = (r_size / 200) / k
 
     shift_x, shift_y = shift
  
