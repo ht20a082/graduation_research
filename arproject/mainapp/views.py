@@ -22,3 +22,8 @@ class CreateImageView(LoginRequiredMixin, CreateView):
     fields = ('title', 'height', 'width', 'thumbnail')
     success_url = reverse_lazy('image-main')
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+
+        return super().form_valid(form)
+
