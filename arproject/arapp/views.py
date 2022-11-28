@@ -9,14 +9,12 @@ import numpy as np
 
 prm = 2
 
-class Ar_camViews(View):
+def Ar_camViews(request, pk):
     model = Image
+    global prm
+    prm = pk
     #prm = Image.objects.latest('id').id
-    def get(self, request, pk):
-        global prm
-        prm = pk
-        return render(request, 'arapp/ar_cam.html', {})
-    print(prm)
+    return render(request, 'arapp/ar_cam.html', {})
 
 
 def video_feed_view():
@@ -77,7 +75,9 @@ def generate_frame(input_path, r_size):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
-    capture = cv2.VideoCapture(1) 
+
+    
+    capture = cv2.VideoCapture(0) 
 
     while True:
         if not capture.isOpened():
