@@ -23,11 +23,11 @@ def video_feed_view():
     #print(prm_obj.prm)
     try:
         obj = Image.objects.get(id = prm)
-        input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
-        r_size = obj.height
     except Image.DoesNotExist:
         obj = None
     #output_path = settings.BASE_DIR + "/media/output/output.jpg"
+    input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
+    r_size = obj.height
     return lambda _: StreamingHttpResponse(generate_frame(input_path, r_size), content_type='multipart/x-mixed-replace; boundary=frame')
 
 def overlay(img, frame, shift, h, size, r_size):
