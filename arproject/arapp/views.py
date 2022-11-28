@@ -7,7 +7,7 @@ from mainapp.models import *
 from django.conf import settings
 import numpy as np
 
-prm = 2
+prm = 1
 
 def Ar_camViews(request, pk):
     model = Image
@@ -21,9 +21,12 @@ def video_feed_view():
     #max_id = Image.objects.latest('id').id
     #prm_obj = Ar_camViews()
     #print(prm_obj.prm)
-    obj = Image.objects.get(id = prm)
-    input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
-    r_size = obj.height
+    try:
+        obj = Image.objects.get(id = prm)
+        input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
+        r_size = obj.height
+    except Image.DoesNotExist:
+        obj = None
     #output_path = settings.BASE_DIR + "/media/output/output.jpg"
     return lambda _: StreamingHttpResponse(generate_frame(input_path, r_size), content_type='multipart/x-mixed-replace; boundary=frame')
 
