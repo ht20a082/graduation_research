@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
@@ -8,14 +9,14 @@ from .models import Image
 class Top_view(TemplateView):
     template_name = 'mainapp/top.html'
 
-class ListSynthesizedView(TemplateView):
+class ListSynthesizedView(LoginRequiredMixin, TemplateView):
     template_name = 'mainapp/synthesized_list.html'
 
-class ListImageView(ListView):
+class ListImageView(LoginRequiredMixin, ListView):
     template_name = 'mainapp/image_list.html'
     model = Image
 
-class CreateImageView(CreateView):
+class CreateImageView(LoginRequiredMixin, CreateView):
     template_name = 'mainapp/image_create.html'
     model = Image
     fields = ('title', 'height', 'width', 'thumbnail')
