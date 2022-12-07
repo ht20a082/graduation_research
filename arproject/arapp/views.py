@@ -26,6 +26,7 @@ def video_feed_view():
     except Image.DoesNotExist:
         obj = None
     #output_path = settings.BASE_DIR + "/media/output/output.jpg"
+    obj = Image.objects.get(id = prm)
     input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
     r_size = obj.height
     return lambda _: StreamingHttpResponse(generate_frame(input_path, r_size), content_type='multipart/x-mixed-replace; boundary=frame')
@@ -80,7 +81,7 @@ def generate_frame(input_path, r_size):
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     
-    capture = cv2.VideoCapture(0) 
+    capture = cv2.VideoCapture(1) 
 
     while True:
         if not capture.isOpened():

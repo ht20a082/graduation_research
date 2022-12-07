@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block content %}
+{% if object.user == request.user %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
+      <div class="card">
+        <h5 class="card-headder">{{ object.title }}</h5>
+        <div class="card-header">
+          <p class="card-text">{{ object.height }}</p>
+          <h6 class="card-title">{{ object.width }}</h6>
+          <img src="{{ object.thumbnail.url }}" class="img-thumbnail" />
+          <a href="{% url 'ar_cam' object.pk %}" class="btn btn-primary">合成する</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}

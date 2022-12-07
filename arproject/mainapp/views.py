@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, CreateView, DetailView
 from django.views import View
 from .models import Image
 
@@ -26,4 +26,8 @@ class CreateImageView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
 
         return super().form_valid(form)
+
+class DetailImageView(LoginRequiredMixin, DetailView):
+    template_name = 'mainapp/image_detail.html'
+    model = Image
 

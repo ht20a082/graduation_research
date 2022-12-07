@@ -21,7 +21,7 @@
           <p class="card-text">{{ item.height }}</p>
           <h6 class="card-title">{{ item.width }}</h6>
           <img src="{{ item.thumbnail.url }}" class="img-thumbnail" />
-          <a href="{% url 'ar_cam' item.pk %}" class="btn btn-primary">合成する</a>
+          <a href="{% url 'image-detail' item.pk %}" class="btn btn-primary">詳細</a>
         </div>
       </div>
     </div>
