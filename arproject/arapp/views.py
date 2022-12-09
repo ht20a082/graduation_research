@@ -10,8 +10,8 @@ import numpy as np
 prm = 1
 
 def Ar_camViews(request, pk):
-    model = Image
     global prm
+    print(pk)
     prm = pk
     #prm = Image.objects.latest('id').id
     return render(request, 'arapp/ar_cam.html', {})
@@ -20,7 +20,7 @@ def Ar_camViews(request, pk):
 def video_feed_view():
     #max_id = Image.objects.latest('id').id
     #prm_obj = Ar_camViews()
-    #print(prm_obj.prm)
+    print(prm)
     try:
         obj = Image.objects.get(id = prm)
     except Image.DoesNotExist:
@@ -76,6 +76,7 @@ def overlay(img, frame, shift, h, size, r_size):
 def generate_frame(input_path, r_size):
     #img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
     img = cv2.imread(input_path)
+    print(input_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     font = cv2.FONT_HERSHEY_SIMPLEX

@@ -35,6 +35,10 @@
     ui.start('#firebaseui-auth-container', uiConfig);
   </script>
 
+  <!-- stylesheet -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
   <title>{% block title %}{% endblock title %}| 絵画合成アプリケーション</title>
 </head>
 

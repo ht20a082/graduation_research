@@ -1,0 +1,13 @@
+img {
+    max-width: 100%;
+  }
+  
+  .grid-img {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 30%;
+  }
+  
+  .grid-img img {
+    position: absolute;
+  }

@@ -15,15 +15,9 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
-      <div class="card">
-        <h5 class="card-headder">{{ item.title }}</h5>
-        <div class="card-header">
-          <p class="card-text">{{ item.height }}</p>
-          <h6 class="card-title">{{ item.width }}</h6>
-          <img src="{{ item.thumbnail.url }}" class="img-thumbnail" />
-          <a href="{% url 'image-detail' item.pk %}" class="btn btn-primary">詳細</a>
-        </div>
-      </div>
+          <a href="{% url 'image-detail' item.pk %}" class="thumbnail">
+            <img src="{{ item.thumbnail.url }}"/>
+          </a>
     </div>
   </div>
 </div>
