@@ -8,3 +8,5 @@ urlpatterns = [
     path('<int:pk>/ar_cam/', views.Ar_camViews, name="ar_cam"),
     path('video_feed/', views.video_feed_view(), name="video_feed"),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

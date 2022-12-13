@@ -9,10 +9,28 @@ import numpy as np
 
 prm = 1
 
-def Ar_camViews(request, pk):
+def update_prm(pk):
     global prm
-    print(pk)
     prm = pk
+
+def create_path():
+    obj = Image.objects.get(id = prm)
+    input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
+    return input_path
+
+def acqu_size_h():
+    obj = Image.objects.get(id = prm)
+    r_size = obj.height
+    return r_size
+
+def show():
+    print(prm)
+
+def Ar_camViews(request, pk):
+    model = Image
+    update_prm(pk)
+    show()
+    video_feed_view()
     #prm = Image.objects.latest('id').id
     return render(request, 'arapp/ar_cam.html', {})
 
@@ -20,16 +38,9 @@ def Ar_camViews(request, pk):
 def video_feed_view():
     #max_id = Image.objects.latest('id').id
     #prm_obj = Ar_camViews()
-    print(prm)
-    try:
-        obj = Image.objects.get(id = prm)
-    except Image.DoesNotExist:
-        obj = None
+    #print(prm_obj.prm)
     #output_path = settings.BASE_DIR + "/media/output/output.jpg"
-    obj = Image.objects.get(id = prm)
-    input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
-    r_size = obj.height
-    return lambda _: StreamingHttpResponse(generate_frame(input_path, r_size), content_type='multipart/x-mixed-replace; boundary=frame')
+    return lambda _: StreamingHttpResponse(generate_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 def overlay(img, frame, shift, h, size, r_size):
     k = size / h
@@ -73,16 +84,17 @@ def overlay(img, frame, shift, h, size, r_size):
  
     return frame
 
-def generate_frame(input_path, r_size):
+def generate_frame():
+    input_path = create_path()
+    r_size = acqu_size_h()
     #img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
     img = cv2.imread(input_path)
-    print(input_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     
-    capture = cv2.VideoCapture(1) 
+    capture = cv2.VideoCapture(1)
 
     capture.set(cv2.CAP_PROP_FPS, 30)
 
