@@ -84,6 +84,8 @@ def generate_frame(input_path, r_size):
     
     capture = cv2.VideoCapture(1) 
 
+    capture.set(cv2.CAP_PROP_FPS, 30)
+
     while True:
         if not capture.isOpened():
             print("Capture is not opened.")
