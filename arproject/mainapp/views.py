@@ -9,9 +9,6 @@ from .models import Image
 class Top_view(TemplateView):
     template_name = 'mainapp/top.html'
 
-class ListSynthesizedView(LoginRequiredMixin, TemplateView):
-    template_name = 'mainapp/synthesized_list.html'
-
 class ListImageView(LoginRequiredMixin, ListView):
     template_name = 'mainapp/image_list.html'
     model = Image
