@@ -1,9 +1,17 @@
-<div>
-<div id="image_area">
-    <img src="/video_feed" width="70%" height="auto" />
-</div>
-</div>
-<script>
+{% extends 'base.html' %}
 
+{% block title %}合成ページ{% endblock %}
 
-</script>
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="mx-auto">
+            <div id="image_area">
+                <img src="/video_feed" width="100%" height="auto" />
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
