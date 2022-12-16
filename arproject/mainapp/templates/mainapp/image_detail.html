@@ -10,8 +10,8 @@
       <div class="card">
         <h5 class="card-headder">{{ object.title }}</h5>
         <div class="card-header">
-          <p class="card-text">{{ object.height }}</p>
-          <h6 class="card-title">{{ object.width }}</h6>
+          <p class="card-text">高さ:{{ object.height }}</p>
+          <h6 class="card-title">幅:{{ object.width }}</h6>
           <img src="{{ object.thumbnail.url }}" class="img-thumbnail" />
           <a href="{% url 'ar_cam' object.pk %}" class="btn btn-primary">合成する</a>
         </div>
