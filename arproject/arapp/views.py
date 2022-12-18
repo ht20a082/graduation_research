@@ -7,89 +7,55 @@ from mainapp.models import *
 from django.conf import settings
 import numpy as np
 
-prm = 1
+prm = 1 #デフォルトのプライマリーキー
 
+# グローバル変数prmを更新する関数
 def update_prm(pk):
     global prm
     prm = pk
 
+# 絵画の画像のパスを返す関数
 def create_path():
     obj = Image.objects.get(id = prm)
     input_path = str(settings.BASE_DIR) + str(obj.thumbnail.url)
     return input_path
 
+# 絵画の実際の高さを返す関数
 def acqu_size_h():
     obj = Image.objects.get(id = prm)
     r_size = obj.height
     return r_size
 
-def show():
-    print(prm)
-
 def Ar_camViews(request, pk):
-    model = Image
     update_prm(pk)
-    show()
     video_feed_view()
-    #prm = Image.objects.latest('id').id
     return render(request, 'arapp/ar_cam.html', {})
 
 
 def video_feed_view():
-    #max_id = Image.objects.latest('id').id
-    #prm_obj = Ar_camViews()
-    #print(prm_obj.prm)
-    #output_path = settings.BASE_DIR + "/media/output/output.jpg"
     return lambda _: StreamingHttpResponse(generate_frame(), content_type='multipart/x-mixed-replace; boundary=frame')
 
+#アフィン変換行列による絵画の画像とカメラ映像を合成する関数
 def overlay(img, frame, shift, h, size, r_size):
+    qr_size = 200   # QRコードの高さ
     k = size / h
-    mag = (r_size / 200) / k
+    mag = (r_size / qr_size) / k    # 変換倍率
 
     shift_x, shift_y = shift
  
-    img_h, img_w = img.shape[:2]
-    img_x_min, img_x_max = 0, img_w
-    img_y_min, img_y_max = 0, img_h
- 
     frame_h, frame_w = frame.shape[:2]
-    frame_x_min, frame_x_max = shift_y, shift_y+img_h
-    frame_y_min, frame_y_max = shift_x, shift_x+img_w
- 
-    if frame_x_min < 0:
-        img_x_min = img_x_min - frame_x_min
-        frame_x_min = 0
-         
-    if frame_x_max > frame_w:
-        img_x_max = img_x_max - (frame_x_max - frame_w)
-        frame_x_max = frame_w
- 
-    if frame_y_min < 0:
-        img_y_min = img_y_min - frame_y_min
-        frame_y_min = 0
-         
-    if frame_y_max > frame_h:
-        img_y_max = img_y_max - (frame_y_max - frame_h)
-        frame_y_max = frame_h        
- 
-    #frame[frame_y_min:frame_y_max, frame_x_min:frame_x_max] = img[img_y_min:img_y_max, img_x_min:img_x_max]
+    
     dx = shift_x
     dy = shift_y
     m = np.float32([[mag, 0, dx],[0, mag, dy]])
     frame = cv2.warpAffine(img, m, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
-
-    M = cv2.getRotationMatrix2D((int(dx), int(dy)), 0, mag)
-    print(M)
-    #frame = cv2.warpAffine(img, M, (frame_w, frame_h), frame, borderMode=cv2.BORDER_TRANSPARENT)
  
     return frame
 
 def generate_frame():
     input_path = create_path()
     r_size = acqu_size_h()
-    #img = cv2.imread('C:\\Users\\ht20a082\\Desktop\\graduation_research\\arproject\\media\\0001.jpg')
     img = cv2.imread(input_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -118,10 +84,6 @@ def generate_frame():
                     frame = cv2.putText(frame, dec_inf, (x, y-6), font, .3, (255,0,0), 1, cv2.LINE_AA)
 
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255,0), 1)
-
-                    #img2 = cv2.resize(img , (int(width*0.05), int(height*0.05)))
-
-                    #frame[y:y+img2.shape[0], x:x+img2.shape[1]] = img2
 
                     size = img.shape[0]
 
